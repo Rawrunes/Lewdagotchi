@@ -121,7 +121,7 @@ public class SpriteSheetAnimation extends Activity {
         private int currentView = VIEW_PET;
         private int currentMenu = MENU_MAIN;
 
-        private int subMenuFeedSlots = 5;
+        private int subMenuFeedSlots = 2;
 
 
         //option sprite measurements
@@ -233,7 +233,23 @@ public class SpriteSheetAnimation extends Activity {
             long time  = System.currentTimeMillis();
 
             if(overlayWait){
-                
+                if(overlayStart <= time){
+                    overlayWait = false;
+                    overlayPlay = true;
+                }
+            }
+
+            if(overlayPlay){
+                if(overlayEnd <= time){
+                    overlayPlay = false;
+                }
+            }
+
+            if(crumbWait){
+                if(crumbDelay <= time){
+                    crumbWait = false;
+                    c.setCrumbs(true);
+                }
             }
 
             if(animationRunning){
@@ -299,7 +315,11 @@ public class SpriteSheetAnimation extends Activity {
                     canvas.drawBitmap(currentSprite,
                             frameToDraw,
                             whereToDraw, paint);
-
+                    if(c.hasCrumbs()){
+                        canvas.drawBitmap(ui.getSpriteDirtCrumbs(),
+                                drawOnCenter,
+                                whereToDraw, paint);
+                    }
 
                     if(menuEnabled) {
                         canvas.drawBitmap(ui.getSpriteMenu(),
@@ -327,6 +347,11 @@ public class SpriteSheetAnimation extends Activity {
                             whereToDraw, paint);
                 }
 
+                if(overlayPlay){
+                    canvas.drawBitmap(overlaySprite,
+                            drawOnCenter,
+                            whereToDraw, paint);
+                }
 
 
                 paint.setColor(Color.argb(255, 0, 0, 0));
@@ -439,11 +464,21 @@ public class SpriteSheetAnimation extends Activity {
         private boolean overlayPlay = false;
         private long overlayStart;
         private long overlayEnd;
+        private Bitmap overlaySprite;
 
         private void playOverlay(long start, long duration, Bitmap overlay){
+            overlaySprite = overlay;
             overlayStart = System.currentTimeMillis() + start;
             overlayEnd = overlayStart + duration;
             overlayWait = true;
+        }
+
+        private long crumbDelay;
+        private boolean crumbWait = false;
+
+        private void activateCrumbs(long start){
+            crumbDelay = System.currentTimeMillis() + start;
+            crumbWait = true;
         }
 
         private boolean isInside(int x, int y, Rect rect){
@@ -454,6 +489,14 @@ public class SpriteSheetAnimation extends Activity {
                 return false;
             }
 
+        }
+
+        private long addupTime(long[] times){
+            long time = 0;
+            for(int i = 0; i < times.length; i++){
+                time += times[i];
+            }
+            return time;
         }
 
         // The SurfaceView class implements onTouchListener
@@ -498,13 +541,12 @@ public class SpriteSheetAnimation extends Activity {
                                 } else if (isInside(x, y, button)) {
                                     switch (selectedOption) {
                                         case OP_PLAY:
-                                            /*currentMenu = MENU_SUB;
-                                            subMenuType = SUB_FEED;
-                                            subMenuSlot = 0;*/
+                                            /*TODO*/
                                             break;
                                         case OP_FEED:
-                                            playAnimation(new Bitmap[]{c.getEatingAnimation(), c.getHappyAnimation()}, new long[]{3000, 3000});
-                                            menuEnabled = false;
+                                            currentMenu = MENU_SUB;
+                                            subMenuType = SUB_FEED;
+                                            subMenuSlot = 0;
                                             break;
                                         case OP_FUCK:
                                             playAnimation(c.getFuckAnimation(), c.getFuckDuration());
@@ -530,6 +572,7 @@ public class SpriteSheetAnimation extends Activity {
                                         case OP_OPTION:
                                             break;
                                         case OP_BATH:
+                                            c.setCrumbs(false);
                                             playAnimation(new Bitmap[]{c.getBathAnimation(), c.getHappyAnimation()}, new long[]{3000, 3000});
                                             menuEnabled = false;
                                             break;
@@ -556,6 +599,21 @@ public class SpriteSheetAnimation extends Activity {
                                         }
                                         else{
                                             subMenuSlot = 0;
+                                        }
+                                    }
+                                    else if(isInside(x,y,button)){
+                                        switch(subMenuSlot){
+                                            case 0:
+                                                currentMenu = MENU_MAIN;
+                                                break;
+                                            case 1:
+                                                playOverlay(0,3000,ui.getSpriteFoodCandy());
+                                                playAnimation(new Bitmap[]{c.getEatingAnimation(), c.getHappyAnimation()}, new long[]{3000, 3000});
+                                                activateCrumbs(3000);
+                                                menuEnabled = false;
+                                                break;
+                                            default:
+                                                break;
                                         }
                                     }
                                 }
