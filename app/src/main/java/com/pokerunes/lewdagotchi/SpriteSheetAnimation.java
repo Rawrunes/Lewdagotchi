@@ -232,6 +232,10 @@ public class SpriteSheetAnimation extends Activity {
 
             long time  = System.currentTimeMillis();
 
+            if(overlayWait){
+                
+            }
+
             if(animationRunning){
                 if ( time-animationTimer >= aniTimer.getFirst() ) {
                     aniTimer.removeFirst();
@@ -429,6 +433,17 @@ public class SpriteSheetAnimation extends Activity {
             animationDuration = 0;
             animationTimer = 0;
             currentSprite = c.getIdleAnimation();
+        }
+
+        private boolean overlayWait = false;
+        private boolean overlayPlay = false;
+        private long overlayStart;
+        private long overlayEnd;
+
+        private void playOverlay(long start, long duration, Bitmap overlay){
+            overlayStart = System.currentTimeMillis() + start;
+            overlayEnd = overlayStart + duration;
+            overlayWait = true;
         }
 
         private boolean isInside(int x, int y, Rect rect){
