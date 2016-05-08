@@ -29,7 +29,8 @@ public class Bestiary {
                 R.drawable.stage1_pet,
                 R.drawable.stage1_happy,
                 new int[]{R.drawable.stage1_blush,R.drawable.stage1_fuck1,R.drawable.stage1_fuck2},
-                new long[]{3000,3000,3000});
+                new long[]{3000,3000,3000},
+                0,0);
        /* stage2G = new Creature();
         stage2B = new Creature();*/
         stage3GG = new Creature(context,R.drawable.stage3gg_idle,
@@ -38,7 +39,8 @@ public class Bestiary {
                 R.drawable.stage3gg_happy,
                 R.drawable.stage3gg_happy,
                 new int[]{R.drawable.stage3gg_fuck1,R.drawable.stage3gg_fuck2,R.drawable.stage3gg_fuck3,R.drawable.stage3gg_fuck4},
-                new long[]{3000,3000,3000,3000});
+                new long[]{3000,3000,3000,3000},
+                3000,6000);
         /*stage3GB = new Creature();
         stage3BG = new Creature();
         stage3BB = new Creature();*/

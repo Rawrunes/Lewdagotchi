@@ -252,6 +252,19 @@ public class SpriteSheetAnimation extends Activity {
                 }
             }
 
+            if(overlayHideDelay){
+                if(overlayHideStart <= time){
+                    overlayHideDelay = false;
+                    overlaysEnabled = false;
+                }
+            }
+
+            if(!overlaysEnabled){
+                if(overlayHideDuration <= time){
+                    overlaysEnabled = true;
+                }
+            }
+
             if(animationRunning){
                 if ( time-animationTimer >= aniTimer.getFirst() ) {
                     aniTimer.removeFirst();
@@ -312,14 +325,18 @@ public class SpriteSheetAnimation extends Activity {
                 getCurrentFrame();
 
                 if(currentView == VIEW_PET){
+                    if(overlaysEnabled) {
+                        if (c.hasCrumbs()) {
+                            canvas.drawBitmap(ui.getSpriteDirtCrumbs(),
+                                    drawOnCenter,
+                                    whereToDraw, paint);
+                        }
+                    }
+
                     canvas.drawBitmap(currentSprite,
                             frameToDraw,
                             whereToDraw, paint);
-                    if(c.hasCrumbs()){
-                        canvas.drawBitmap(ui.getSpriteDirtCrumbs(),
-                                drawOnCenter,
-                                whereToDraw, paint);
-                    }
+
 
                     if(menuEnabled) {
                         canvas.drawBitmap(ui.getSpriteMenu(),
@@ -481,6 +498,18 @@ public class SpriteSheetAnimation extends Activity {
             crumbWait = true;
         }
 
+
+        private boolean overlaysEnabled = true;
+        private boolean overlayHideDelay = false;
+        private long overlayHideStart;
+        private long overlayHideDuration;
+
+        private void hideOverlays(long start, long duration){
+            overlayHideStart = System.currentTimeMillis() + start;
+            overlayHideDuration = overlayHideStart + duration;
+            overlayHideDelay = true;
+        }
+
         private boolean isInside(int x, int y, Rect rect){
             if(x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom){
                 return true;
@@ -550,6 +579,7 @@ public class SpriteSheetAnimation extends Activity {
                                             break;
                                         case OP_FUCK:
                                             playAnimation(c.getFuckAnimation(), c.getFuckDuration());
+                                            hideOverlays(c.getOverHideStart(),c.getOverHideDuration());
                                             menuEnabled = false;
                                             break;
                                         case OP_STORE:
@@ -611,6 +641,7 @@ public class SpriteSheetAnimation extends Activity {
                                                 playAnimation(new Bitmap[]{c.getEatingAnimation(), c.getHappyAnimation()}, new long[]{3000, 3000});
                                                 activateCrumbs(3000);
                                                 menuEnabled = false;
+                                                currentMenu = MENU_MAIN;
                                                 break;
                                             default:
                                                 break;

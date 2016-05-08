@@ -31,7 +31,10 @@ public class Creature {
     private Bitmap[] fuckAnimation;
     private long[] fuckDuration;
 
-    public Creature(Context context, int idleA, int bathA, int eatingA, int petA, int happyA, int[] fuckA,long[] fuckD) {
+    private long overHideStart;
+    private long overHideDuration;
+
+    public Creature(Context context, int idleA, int bathA, int eatingA, int petA, int happyA, int[] fuckA,long[] fuckD, long ohStart, long ohDuration) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
 
@@ -47,6 +50,8 @@ public class Creature {
         }
 
         fuckDuration = fuckD;
+        overHideStart = ohStart;
+        overHideDuration = ohDuration;
     }
 
     public void evolve() {
@@ -105,5 +110,13 @@ public class Creature {
 
     public long[] getFuckDuration() {
         return fuckDuration;
+    }
+
+    public long getOverHideStart() {
+        return overHideStart;
+    }
+
+    public long getOverHideDuration() {
+        return overHideDuration;
     }
 }
