@@ -1,5 +1,6 @@
 package com.pokerunes.lewdagotchi;
 
+import android.app.NotificationManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -112,7 +114,11 @@ public class SpriteSheetAnimation extends Activity {
                 MENU_SUB_BIG = 2;
 
         private final int SUB_FEED = 0,
-                SUB_OPTIONS = 1;
+                SUB_OPTIONS = 1,
+                SUB_STORE_MAIN = 2,
+                SUB_STORE_FOOD = 3,
+                SUB_STORE_HOME = 4,
+                SUB_STORE = 5;
 
         private int selectedOption = OP_PLAY;
         private int subMenuType = 0;
@@ -122,6 +128,7 @@ public class SpriteSheetAnimation extends Activity {
         private int currentMenu = MENU_MAIN;
 
         private int subMenuFeedSlots = 2;
+        private int subMenuStoreSlots = 4;
 
 
         //option sprite measurements
@@ -165,6 +172,8 @@ public class SpriteSheetAnimation extends Activity {
         private Rect menuToDraw = new Rect();
         Rect whereToDrawMenu = new Rect();
 
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext());
+
         // When the we initialize (call new()) on gameView
         // This special constructor method runs
         public GameView(Context context) {
@@ -172,6 +181,10 @@ public class SpriteSheetAnimation extends Activity {
             // SurfaceView class to set up our object.
             // How kind.
             super(context);
+
+            mBuilder.setSmallIcon(R.drawable.food_candy);
+            mBuilder.setContentTitle("Notification Alert, Click Me!");
+            mBuilder.setContentText("Hi, This is Android Notification Detail!");
 
             // Initialize ourHolder and paint objects
             ourHolder = getHolder();
@@ -249,6 +262,13 @@ public class SpriteSheetAnimation extends Activity {
                 if(crumbDelay <= time){
                     crumbWait = false;
                     c.setCrumbs(true);
+                }
+            }
+
+            if(cumWait){
+                if(cumDelay <= time){
+                    cumWait = false;
+                    c.setCum(true);
                 }
             }
 
@@ -362,6 +382,14 @@ public class SpriteSheetAnimation extends Activity {
                     canvas.drawBitmap(ui.getSpriteStoreUI(),
                             frameToDraw,
                             whereToDraw, paint);
+                    if(subMenuType == SUB_STORE_MAIN) {
+                        canvas.drawBitmap(ui.getSpriteMenu(),
+                                drawOnCenter,
+                                whereToDraw, paint);
+                        canvas.drawBitmap(ui.getSMSelector(subMenuSlot),
+                                drawOnCenter,
+                                whereToDraw, paint);
+                    }
                 }
 
                 if(overlayPlay){
@@ -498,6 +526,14 @@ public class SpriteSheetAnimation extends Activity {
             crumbWait = true;
         }
 
+        private long cumDelay;
+        private boolean cumWait = false;
+
+        private void activateCum(long start){
+            cumDelay = System.currentTimeMillis() + start;
+            cumWait = true;
+        }
+
 
         private boolean overlaysEnabled = true;
         private boolean overlayHideDelay = false;
@@ -571,6 +607,8 @@ public class SpriteSheetAnimation extends Activity {
                                     switch (selectedOption) {
                                         case OP_PLAY:
                                             /*TODO*/
+                                            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                                            mNotificationManager.notify(001, mBuilder.build());
                                             break;
                                         case OP_FEED:
                                             currentMenu = MENU_SUB;
@@ -580,10 +618,14 @@ public class SpriteSheetAnimation extends Activity {
                                         case OP_FUCK:
                                             playAnimation(c.getFuckAnimation(), c.getFuckDuration());
                                             hideOverlays(c.getOverHideStart(),c.getOverHideDuration());
+                                            activateCum(addupTime(c.getFuckDuration()));
                                             menuEnabled = false;
                                             break;
                                         case OP_STORE:
-                                            menuEnabled = false;
+                                            menuEnabled = true;
+                                            currentMenu = MENU_SUB;
+                                            subMenuType = SUB_STORE_MAIN;
+                                            subMenuSlot = 0;
                                             currentView = VIEW_STORE;
                                             break;
                                         case OP_CUSTOM:
@@ -655,6 +697,37 @@ public class SpriteSheetAnimation extends Activity {
                         }
                     }
                     else if(currentView == VIEW_STORE){
+                        if(subMenuType == SUB_STORE_MAIN) {
+                            if (isInside(x, y, leftBorder)) {
+                                if (subMenuSlot > 0) {
+                                    subMenuSlot--;
+                                } else {
+                                    subMenuSlot = subMenuStoreSlots - 1;
+                                }
+                            } else if (isInside(x, y, rightBorder)) {
+                                if (subMenuSlot < subMenuStoreSlots - 1) {
+                                    subMenuSlot++;
+                                } else {
+                                    subMenuSlot = 0;
+                                }
+                            }else if(isInside(x,y,button)){
+                                switch (subMenuSlot){
+                                    case 0:
+                                        menuEnabled = false;
+                                        currentMenu = MENU_MAIN;
+                                        currentView = VIEW_PET;
+                                        break;
+                                    case 1:
+                                        break;
+                                    case 2:
+                                        break;
+                                    case 3:
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
                         currentView = VIEW_PET;
                     }
 
