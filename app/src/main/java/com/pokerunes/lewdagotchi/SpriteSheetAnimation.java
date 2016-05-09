@@ -182,7 +182,7 @@ public class SpriteSheetAnimation extends Activity {
             // How kind.
             super(context);
 
-            mBuilder.setSmallIcon(R.drawable.food_candy);
+            mBuilder.setSmallIcon(R.drawable.system_notificationicon);
             mBuilder.setContentTitle("Notification Alert, Click Me!");
             mBuilder.setContentText("Hi, This is Android Notification Detail!");
 
@@ -488,7 +488,6 @@ public class SpriteSheetAnimation extends Activity {
         }
 
         private void playAnimation(Bitmap[] animation, long[] animationDuration){
-            animationRunning = true;
             //this.animationDuration = animationDuration;
             //currentSprite = animation;
             animationTimer = System.currentTimeMillis();
@@ -496,6 +495,7 @@ public class SpriteSheetAnimation extends Activity {
                 aniSprites.add(animation[i]);
                 aniTimer.add(animationDuration[i]);
             }
+            animationRunning = true;
         }
 
         private void stopAnimation(){
@@ -645,6 +645,7 @@ public class SpriteSheetAnimation extends Activity {
                                             break;
                                         case OP_BATH:
                                             c.setCrumbs(false);
+                                            c.setCum(false);
                                             playAnimation(new Bitmap[]{c.getBathAnimation(), c.getHappyAnimation()}, new long[]{3000, 3000});
                                             menuEnabled = false;
                                             break;
@@ -728,7 +729,6 @@ public class SpriteSheetAnimation extends Activity {
                                 }
                             }
                         }
-                        currentView = VIEW_PET;
                     }
 
 
