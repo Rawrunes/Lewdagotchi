@@ -27,14 +27,17 @@ public class Creature {
     private Bitmap bathAnimation;
     private Bitmap eatingAnimation;
     private Bitmap petAnimation;
+    private Bitmap handAnimation;
+    private Bitmap handCumAnimation;
     private Bitmap happyAnimation;
+    private Bitmap cumAnimation;
     private Bitmap[] fuckAnimation;
     private long[] fuckDuration;
 
     private long overHideStart;
     private long overHideDuration;
 
-    public Creature(Context context, int idleA, int bathA, int eatingA, int petA, int happyA, int[] fuckA,long[] fuckD, long ohStart, long ohDuration) {
+    public Creature(Context context, int idleA, int bathA, int eatingA, int petA, int handA, int handCumA, int happyA,int cumA, int[] fuckA,long[] fuckD, long ohStart, long ohDuration) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
 
@@ -42,7 +45,10 @@ public class Creature {
         bathAnimation = BitmapFactory.decodeResource(context.getResources(), bathA, options);
         eatingAnimation = BitmapFactory.decodeResource(context.getResources(), eatingA, options);
         petAnimation = BitmapFactory.decodeResource(context.getResources(), petA, options);
+        handAnimation = BitmapFactory.decodeResource(context.getResources(), handA, options);
+        handCumAnimation = BitmapFactory.decodeResource(context.getResources(), handCumA, options);
         happyAnimation = BitmapFactory.decodeResource(context.getResources(), happyA, options);
+        cumAnimation = BitmapFactory.decodeResource(context.getResources(), cumA, options);
 
         fuckAnimation = new Bitmap[fuckA.length];
         for (int i = 0; i < fuckA.length; i++) {
@@ -118,5 +124,17 @@ public class Creature {
 
     public long getOverHideDuration() {
         return overHideDuration;
+    }
+
+    public Bitmap getHandCumAnimation() {
+        return handCumAnimation;
+    }
+
+    public Bitmap getHandAnimation() {
+        return handAnimation;
+    }
+
+    public Bitmap getCumAnimation() {
+        return cumAnimation;
     }
 }
