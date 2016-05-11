@@ -76,7 +76,7 @@ public class SpriteSheetAnimation extends Activity {
         UI ui = new UI(getContext());
 
         Bestiary bestiary = new Bestiary(getContext());
-        Creature c = bestiary.getStage3GG();
+        Creature c = bestiary.getStage1();
 
         // Declare an object of type Bitmap
         Bitmap currentSprite;
@@ -272,16 +272,29 @@ public class SpriteSheetAnimation extends Activity {
                 }
             }
 
-            if(overlayHideDelay){
-                if(overlayHideStart <= time){
-                    overlayHideDelay = false;
-                    overlaysEnabled = false;
+            if(crumbsHideDelay){
+                if(crumbsHideStart <= time){
+                    crumbsHideDelay = false;
+                    crumbsEnabled = false;
                 }
             }
 
-            if(!overlaysEnabled){
-                if(overlayHideDuration <= time){
-                    overlaysEnabled = true;
+            if(!crumbsEnabled){
+                if(crumbsHideDuration <= time){
+                    crumbsEnabled = true;
+                }
+            }
+
+            if(cumHideDelay){
+                if(cumHideStart <= time){
+                    cumHideDelay = false;
+                    cumEnabled = false;
+                }
+            }
+
+            if(!cumEnabled){
+                if(cumHideDuration <= time){
+                    cumEnabled = true;
                 }
             }
 
@@ -345,8 +358,8 @@ public class SpriteSheetAnimation extends Activity {
                 getCurrentFrame();
 
                 if(currentView == VIEW_PET){
-                    if(overlaysEnabled) {
-                        if (c.hasCrumbs()) {
+                    if(c.hasCrumbs()) {
+                        if (crumbsEnabled) {
                             canvas.drawBitmap(ui.getSpriteDirtCrumbs(),
                                     drawOnCenter,
                                     whereToDraw, paint);
@@ -357,6 +370,13 @@ public class SpriteSheetAnimation extends Activity {
                             frameToDraw,
                             whereToDraw, paint);
 
+                    if(c.hasCum()) {
+                        if (cumEnabled) {
+                            canvas.drawBitmap(c.getCumAnimation(),
+                                    frameToDraw,
+                                    whereToDraw, paint);
+                        }
+                    }
 
                     if(menuEnabled) {
                         canvas.drawBitmap(ui.getSpriteMenu(),
@@ -393,9 +413,16 @@ public class SpriteSheetAnimation extends Activity {
                 }
 
                 if(overlayPlay){
-                    canvas.drawBitmap(overlaySprite,
-                            drawOnCenter,
-                            whereToDraw, paint);
+                    if(overlayAnimated){
+                        canvas.drawBitmap(overlaySprite,
+                                frameToDraw,
+                                whereToDraw, paint);
+                    }
+                    else {
+                        canvas.drawBitmap(overlaySprite,
+                                drawOnCenter,
+                                whereToDraw, paint);
+                    }
                 }
 
 
@@ -510,12 +537,14 @@ public class SpriteSheetAnimation extends Activity {
         private long overlayStart;
         private long overlayEnd;
         private Bitmap overlaySprite;
+        private boolean overlayAnimated = false;
 
-        private void playOverlay(long start, long duration, Bitmap overlay){
+        private void playOverlay(long start, long duration, Bitmap overlay, boolean animated){
             overlaySprite = overlay;
             overlayStart = System.currentTimeMillis() + start;
             overlayEnd = overlayStart + duration;
             overlayWait = true;
+            overlayAnimated = animated;
         }
 
         private long crumbDelay;
@@ -535,15 +564,26 @@ public class SpriteSheetAnimation extends Activity {
         }
 
 
-        private boolean overlaysEnabled = true;
-        private boolean overlayHideDelay = false;
-        private long overlayHideStart;
-        private long overlayHideDuration;
+        private boolean crumbsEnabled = true;
+        private boolean crumbsHideDelay = false;
+        private long crumbsHideStart;
+        private long crumbsHideDuration;
 
-        private void hideOverlays(long start, long duration){
-            overlayHideStart = System.currentTimeMillis() + start;
-            overlayHideDuration = overlayHideStart + duration;
-            overlayHideDelay = true;
+        private void hideCrumbs(long start, long duration){
+            crumbsHideStart = System.currentTimeMillis() + start;
+            crumbsHideDuration = crumbsHideStart + duration;
+            crumbsHideDelay = true;
+        }
+
+        private boolean cumEnabled = true;
+        private boolean cumHideDelay = false;
+        private long cumHideStart;
+        private long cumHideDuration;
+
+        private void hideCum(long start, long duration){
+            cumHideStart = System.currentTimeMillis() + start;
+            cumHideDuration = cumHideStart + duration;
+            cumHideDelay = true;
         }
 
         private boolean isInside(int x, int y, Rect rect){
@@ -616,8 +656,13 @@ public class SpriteSheetAnimation extends Activity {
                                             subMenuSlot = 0;
                                             break;
                                         case OP_FUCK:
-                                            playAnimation(c.getFuckAnimation(), c.getFuckDuration());
-                                            hideOverlays(c.getOverHideStart(),c.getOverHideDuration());
+                                            if(c.hasCum()){
+                                                playAnimation(c.getFuckCumAnimation(), c.getFuckDuration());
+                                            }else {
+                                                playAnimation(c.getFuckAnimation(), c.getFuckDuration());
+                                            }
+                                            hideCrumbs(c.getCrumbsHideStart(),c.getCrumbsHideDuration());
+                                            hideCum(c.getCumHideStart(),c.getCumHideDuration());
                                             activateCum(addupTime(c.getFuckDuration()));
                                             menuEnabled = false;
                                             break;
@@ -650,6 +695,12 @@ public class SpriteSheetAnimation extends Activity {
                                             menuEnabled = false;
                                             break;
                                         case OP_PET:
+                                            if(c.hasCum()){
+                                                playOverlay(0,3000,c.getHandCumAnimation(),true);
+                                            }
+                                            else{
+                                                playOverlay(0,3000,c.getHandAnimation(),true);
+                                            }
                                             playAnimation(new Bitmap[]{c.getPetAnimation(), c.getHappyAnimation()}, new long[]{3000, 3000});
                                             menuEnabled = false;
                                             break;
@@ -680,7 +731,7 @@ public class SpriteSheetAnimation extends Activity {
                                                 currentMenu = MENU_MAIN;
                                                 break;
                                             case 1:
-                                                playOverlay(0,3000,ui.getSpriteFoodCandy());
+                                                playOverlay(0,3000,ui.getSpriteFoodCandy(),false);
                                                 playAnimation(new Bitmap[]{c.getEatingAnimation(), c.getHappyAnimation()}, new long[]{3000, 3000});
                                                 activateCrumbs(3000);
                                                 menuEnabled = false;

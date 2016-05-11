@@ -32,12 +32,15 @@ public class Creature {
     private Bitmap happyAnimation;
     private Bitmap cumAnimation;
     private Bitmap[] fuckAnimation;
+    private Bitmap[] fuckCumAnimation;
     private long[] fuckDuration;
 
-    private long overHideStart;
-    private long overHideDuration;
+    private long crumbsHideStart;
+    private long crumbsHideDuration;
+    private long cumHideStart;
+    private long cumHideDuration;
 
-    public Creature(Context context, int idleA, int bathA, int eatingA, int petA, int handA, int handCumA, int happyA,int cumA, int[] fuckA,long[] fuckD, long ohStart, long ohDuration) {
+    public Creature(Context context, int idleA, int bathA, int eatingA, int petA, int handA, int handCumA, int happyA,int cumA, int[] fuckA, int[] fuckCA, long[] fuckD, long chStart, long chDuration, long cuhStart, long cuhDuration) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
 
@@ -51,13 +54,17 @@ public class Creature {
         cumAnimation = BitmapFactory.decodeResource(context.getResources(), cumA, options);
 
         fuckAnimation = new Bitmap[fuckA.length];
+        fuckCumAnimation = new Bitmap[fuckA.length];
         for (int i = 0; i < fuckA.length; i++) {
             fuckAnimation[i] = BitmapFactory.decodeResource(context.getResources(), fuckA[i], options);
+            fuckCumAnimation[i] = BitmapFactory.decodeResource(context.getResources(), fuckCA[i], options);
         }
 
         fuckDuration = fuckD;
-        overHideStart = ohStart;
-        overHideDuration = ohDuration;
+        crumbsHideStart = chStart;
+        crumbsHideDuration = chDuration;
+        cumHideStart = cuhStart;
+        cumHideDuration = cuhDuration;
     }
 
     public void evolve() {
@@ -114,16 +121,28 @@ public class Creature {
         return fuckAnimation;
     }
 
+    public Bitmap[] getFuckCumAnimation() {
+        return fuckCumAnimation;
+    }
+
     public long[] getFuckDuration() {
         return fuckDuration;
     }
 
-    public long getOverHideStart() {
-        return overHideStart;
+    public long getCrumbsHideStart() {
+        return crumbsHideStart;
     }
 
-    public long getOverHideDuration() {
-        return overHideDuration;
+    public long getCrumbsHideDuration() {
+        return crumbsHideDuration;
+    }
+
+    public long getCumHideStart() {
+        return cumHideStart;
+    }
+
+    public long getCumHideDuration() {
+        return cumHideDuration;
     }
 
     public Bitmap getHandCumAnimation() {
