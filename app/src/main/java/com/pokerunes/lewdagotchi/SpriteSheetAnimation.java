@@ -663,7 +663,7 @@ public class SpriteSheetAnimation extends Activity {
                                             }
                                             hideCrumbs(c.getCrumbsHideStart(),c.getCrumbsHideDuration());
                                             hideCum(c.getCumHideStart(),c.getCumHideDuration());
-                                            activateCum(addupTime(c.getFuckDuration()));
+                                            activateCum(addupTime(c.getFuckDuration())-3000);
                                             menuEnabled = false;
                                             break;
                                         case OP_STORE:

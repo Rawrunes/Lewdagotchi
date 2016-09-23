@@ -31,9 +31,9 @@ public class Bestiary {
                 R.drawable.stage1_pet_hand_cum,
                 R.drawable.stage1_happy,
                 R.drawable.stage1_cum,
-                new int[]{R.drawable.stage1_blush,R.drawable.stage1_fuck1,R.drawable.stage1_fuck2},
-                new int[]{R.drawable.stage1_blush,R.drawable.stage1_fuck1_cum,R.drawable.stage1_fuck2},
-                new long[]{3000,3000,3000},
+                new int[]{R.drawable.stage1_blush,R.drawable.stage1_fuck1,R.drawable.stage1_fuck2,R.drawable.stage1_happy},
+                new int[]{R.drawable.stage1_blush,R.drawable.stage1_fuck1_cum,R.drawable.stage1_fuck2,R.drawable.stage1_happy},
+                new long[]{3000,3000,3000,3000},
                 0,0,
                 3000,6000);
        /* stage2G = new Creature();
@@ -46,9 +46,9 @@ public class Bestiary {
                 R.drawable.stage3gg_hand_cum,
                 R.drawable.stage3gg_happy,
                 R.drawable.stage3gg_cum,
-                new int[]{R.drawable.stage3gg_fuck1,R.drawable.stage3gg_fuck2,R.drawable.stage3gg_fuck3,R.drawable.stage3gg_fuck4},
-                new int[]{R.drawable.stage3gg_fuck1_cum,R.drawable.stage3gg_fuck2,R.drawable.stage3gg_fuck3,R.drawable.stage3gg_fuck4},
-                new long[]{3000,3000,3000,3000},
+                new int[]{R.drawable.stage3gg_fuck1,R.drawable.stage3gg_fuck2,R.drawable.stage3gg_fuck3,R.drawable.stage3gg_fuck4,R.drawable.stage3gg_happy},
+                new int[]{R.drawable.stage3gg_fuck1_cum,R.drawable.stage3gg_fuck2,R.drawable.stage3gg_fuck3,R.drawable.stage3gg_fuck4,R.drawable.stage3gg_happy},
+                new long[]{3000,3000,3000,3000,3000},
                 0,9000,
                 0,12000);
         /*stage3GB = new Creature();
